@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                                 try {
                                     val testAddr = InetAddress.getByName("$lanBase.$lastOctet")
                                     if (testAddr.isReachable(500)) {
-                                        return "http://$lanBase.$lastOctet:3000"
+                                        return "http://$lanBase.$lastOctet:3001"
                                     }
                                 } catch (_: Exception) {}
                             }
@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         } catch (_: Exception) {}
-        return "http://192.168.1.100:3000"
+        return "http://192.168.1.100:3001"
     }
 
     override fun onBackPressed() {

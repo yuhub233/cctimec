@@ -1,7 +1,7 @@
 {
   "initialWakeUpTime": "12:00",
   "initialSleepTime": "05:00",
-  "serverPort": 3000,
+  "serverPort": 3001,
   "encryptionSalt": "cctimec_2024",
   "ai": {
     "provider": "openai",

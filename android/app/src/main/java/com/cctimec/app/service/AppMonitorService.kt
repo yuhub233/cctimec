@@ -26,7 +26,7 @@ class AppMonitorService : Service() {
         createNotificationChannel()
         startForeground(NOTIF_ID, buildNotification())
         val prefs = getSharedPreferences("cctimec", Context.MODE_PRIVATE)
-        val server = prefs.getString("server_url", "http://192.168.1.100:3000") ?: "http://192.168.1.100:3000"
+        val server = prefs.getString("server_url", "http://192.168.1.100:3001") ?: "http://192.168.1.100:3001"
         apiClient = ApiClient(server)
         startMonitoring()
     }
