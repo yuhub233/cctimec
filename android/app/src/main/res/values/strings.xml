@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CCTimeC</string>
+    <string name="channel_overlay">时间悬浮窗</string>
+    <string name="channel_monitor">应用监控</string>
+</resources>
