@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>CCTimeC</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav id="navbar">
+    <button data-page="time" class="active">时间</button>
+    <button data-page="pomodoro">番茄钟</button>
+    <button data-page="records">记录</button>
+    <button data-page="summaries">AI总结</button>
+    <button data-page="settings">设置</button>
+  </nav>
+
+  <div id="warning-overlay" class="warning-overlay hidden">
+    <h1>⚠️ 娱乐时间即将/已经用完!</h1>
+    <p id="warning-text"></p>
+    <div class="btn-group" style="margin-top:24px">
+      <button class="btn btn-primary" onclick="dismissWarning()">我知道了</button>
+    </div>
+  </div>
+
+  <div id="fullscreen-view" class="fullscreen-clock hidden" onclick="toggleFullscreen()">
+    <div class="time-big" id="fs-time"></div>
+    <div class="time-label" id="fs-label"></div>
+  </div>
+
+  <div id="page-time" class="page active">
+    <div id="sleeping-view" class="wake-preview hidden">
+      <p>如果现在起床，表显时间将是</p>
+      <div class="time-big" id="preview-wake"></div>
+      <div class="btn-group" style="margin-top:32px">
+        <button class="btn btn-primary" onclick="doWake()" style="font-size:20px;padding:16px 48px">起床</button>
+      </div>
+    </div>
+    <div id="awake-view" class="hidden">
+      <div class="time-display">
+        <div class="time-big" id="display-time">--:--</div>
+        <div class="time-label">不常规时间</div>
+        <div class="time-real" id="real-time">真实时间 --:--</div>
+        <div class="speed-badge" id="speed-badge">流速 ×1.0</div>
+        <div><span class="status-badge" id="status-badge">--</span></div>
+      </div>
+      <div class="card">
+        <h3>娱乐时间</h3>
+        <div id="ent-info">--</div>
+        <div class="progress-bar"><div class="progress-fill green" id="ent-progress" style="width:0%"></div></div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="setActivity('idle')">空闲</button>
+        <button class="btn btn-secondary" onclick="setActivity('entertainment')">娱乐</button>
+        <button class="btn btn-secondary" onclick="setActivity('studying')">学习</button>
+        <button class="btn btn-danger" onclick="doSleep()">睡觉</button>
+        <button class="btn btn-secondary" onclick="toggleFullscreen()">全屏时钟</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-pomodoro" class="page">
+    <div id="pomo-idle" class="card" style="text-align:center">
+      <h3>开始番茄钟学习</h3>
+      <div class="setting-item" style="margin:12px auto;max-width:200px">
+        <label>目标学习时长(分钟)</label>
+        <input type="number" id="pomo-target" value="240">
+      </div>
+      <button class="btn btn-primary" onclick="startPomo()">开始学习</button>
+    </div>
+    <div id="pomo-active" class="hidden">
+      <div class="pomo-display">
+        <div class="pomo-time" id="pomo-remaining">--:--</div>
+        <div class="pomo-cycle" id="pomo-info">--</div>
+        <div class="speed-badge" id="pomo-speed">流速 ×1.0</div>
+        <div class="progress-bar" style="margin-top:16px"><div class="progress-fill blue" id="pomo-progress" style="width:0%"></div></div>
+      </div>
+      <div class="btn-group" style="margin-top:24px">
+        <button class="btn btn-danger" onclick="stopPomo()">结束学习</button>
+        <button class="btn btn-secondary" onclick="toggleFullscreenPomo()">全屏番茄钟</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-records" class="page">
+    <div class="card">
+      <h3>历史记录</h3>
+      <div class="record-list" id="record-list"></div>
+    </div>
+    <div class="card hidden" id="record-detail">
+      <h3>详情 <span id="record-detail-date"></span></h3>
+      <div id="record-detail-content"></div>
+    </div>
+  </div>
+
+  <div id="page-summaries" class="page">
+    <div class="btn-group" style="margin-bottom:16px">
+      <button class="btn btn-secondary" onclick="loadSummaries('daily')">日</button>
+      <button class="btn btn-secondary" onclick="loadSummaries('weekly')">周</button>
+      <button class="btn btn-secondary" onclick="loadSummaries('monthly')">月</button>
+      <button class="btn btn-primary" onclick="generateSummary()">生成今日总结</button>
+    </div>
+    <div id="summaries-list"></div>
+  </div>
+
+  <div id="page-settings" class="page">
+    <div class="card">
+      <h3>时间目标</h3>
+      <div class="settings-grid" id="settings-time"></div>
+    </div>
+    <div class="card">
+      <h3>算法参数</h3>
+      <div class="settings-grid" id="settings-algo"></div>
+    </div>
+    <div class="card">
+      <h3>显示设置</h3>
+      <div class="settings-grid" id="settings-display"></div>
+    </div>
+    <div class="card">
+      <h3>娱乐APP列表</h3>
+      <div class="app-list" id="app-list"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input type="text" id="new-app-pkg" placeholder="包名" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:6px">
+        <input type="text" id="new-app-name" placeholder="名称" style="width:100px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:6px">
+        <button class="btn btn-primary" onclick="addApp()">添加</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>服务器连接</h3>
+      <div class="setting-item">
+        <label>服务器地址</label>
+        <input type="text" id="server-addr" value="">
+      </div>
+      <button class="btn btn-primary" style="margin-top:12px" onclick="reconnect()">重新连接</button>
+    </div>
+    <div style="margin-top:12px"><button class="btn btn-primary" onclick="saveSettings()">保存设置</button></div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
