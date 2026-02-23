@@ -15,7 +15,7 @@ cd server
 npm install
 npm start
 ```
-访问 http://localhost:3000
+访问 http://localhost:3001
 
 ### Android
 用 Android Studio 打开 `android/` 目录构建。
